@@ -1,0 +1,34 @@
+- name: exo
+  hosts: cible1
+  become: yes
+
+  tasks:
+  - name: install require modules
+    apt:
+      name: '{{ item }}'
+      state: present
+    loop: [curl, git, nodejs, npm]
+  
+  - name: clone git
+    git:
+      repo: https://gitlab.com/cdufour1/nodeapp.git
+      dest: /src/ansible-examples
+      version: main
+      separate_git_dir: /src/ansible-examples.git
+  
+
+  - name: copy app to the right path
+    copy:
+      src: /src/ansible-examples/{{ item }}
+      dest: /var/www/html/{{ item }}
+      remote_src: yes
+    loop: [app.js, package.json]
+  
+  - name: install dependencies
+    npm:
+      path: /var/www/html
+      executable: /usr/bin/npm
+
+  - name: run app
+    command: node /var/www/html/app.js &
+
