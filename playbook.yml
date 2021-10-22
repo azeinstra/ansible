@@ -1,5 +1,5 @@
 - name: exo
-  hosts: cible1
+  hosts: dev
   become: yes
 
   tasks:
@@ -7,7 +7,7 @@
     apt:
       name: '{{ item }}'
       state: present
-    loop: [curl, git, nodejs, npm]
+    loop: [git, nodejs, npm]
   
   - name: clone git
     git:
